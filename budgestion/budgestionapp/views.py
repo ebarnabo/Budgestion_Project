@@ -7,3 +7,6 @@ def index(request):
 
 def inscription(request):
     return render(request, 'inscription.html')
+
+def dashboard(request):
+    return render(request, 'dashboard.html')
