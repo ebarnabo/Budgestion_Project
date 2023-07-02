@@ -1,0 +1,28 @@
+body {
+    background-color: #f8f9fa;
+  }
+  
+  .container {
+    margin-top: 40px;
+  }
+  
+  h1, h2 {
+    color: #343a40;
+  }
+  
+  .navbar {
+    background-color: #343a40;
+  }
+  
+  .navbar-brand {
+    color: #ffffff;
+  }
+  
+  .nav-link {
+    color: #ffffff;
+  }
+  
+  #chartContainer {
+    margin-top: 20px;
+  }
+  
