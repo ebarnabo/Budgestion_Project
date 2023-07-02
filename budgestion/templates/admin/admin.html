@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Gérer ses achats</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script type="text/javascript" src="admin.js" defer></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Gérer ses achats</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Statistiques</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Paramètres</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h1>Bienvenue dans l'Admin Dashboard</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Statistiques</h2>
+                <div id="chartContainer" style="height: 400px;"></div>
+            </div>
+            <div class="col-md-6">
+                <h2>Paramètres</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="nom">Nom :</label>
+                        <input type="text" class="form-control" id="nom">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email :</label>
+                        <input type="email" class="form-control" id="email">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        Highcharts.chart('chartContainer', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Achats totaux par étudiant'
+            },
+            xAxis: {
+                categories: ['Étudiant 1', 'Étudiant 2', 'Étudiant 3', 'Étudiant 4', 'Étudiant 5']
+            },
+            yAxis: {
+                title: {
+                    text: 'Montant des achats'
+                }
+            },
+            series: [{
+                name: 'Achats',
+                data: [100, 200, 150, 300, 250]
+            }]
+        });
+    </script>
+</body>
+</html>
