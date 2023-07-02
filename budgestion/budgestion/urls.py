@@ -20,6 +20,6 @@ from budgestionapp import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('inscription/', views.inscription, name='inscription'),  # Nouvelle URL pour la page d'inscription
-    path('admin/', admin.site.urls),
+    path('inscription/', views.inscription, name='inscription'),
+    path('admin/', admin.site.urls, name='admin'),
 ]

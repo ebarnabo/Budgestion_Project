@@ -17,12 +17,12 @@
                         <span class="login100-form-title"><span class="logge mb-5 animate__animated animate__fadeInDown">BUDGESTION</span></span>
 
                         <div class="wrap-input100 validate-input mt-5 mb-5" data-validate="Pseudo">
-                            <input class="input100" type="text" name="Pseudo">
+                            <input class="input100" type="text" name="Pseudo" autocomplete="off">
                             <span class="focus-input100" data-placeholder="Pseudo"></span>
                         </div>
 
                         <div class="wrap-input100 validate-input mb-5" data-validate="École d'origine">
-                            <input class="input100" type="password" name="École d'origine">
+                            <input class="input100" type="password" name="École d'origine" autocomplete="off">
                             <span class="focus-input100" data-placeholder="École d'origine"></span>
                         </div>
 
@@ -38,8 +38,7 @@
 
                         <div class="container-login100-form-btn">
                             <button class="login100-form-btn mb-5">Connexion</button>
-                            <a href="{% url 'index' %}" class="txt2 mx-5">Connexion</a>
-                            <a href="#" class="txt2 mx-5">Administrateur</a>
+                            <a href="/" class="txt2 mx-5">Connexion</a>
                         </div>
                         
                     </form>
