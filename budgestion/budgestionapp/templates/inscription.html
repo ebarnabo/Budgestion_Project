@@ -1,5 +1,4 @@
 {% load static %}
-<!DOCTYPE html>
 <html lang="fr">
     <head>
     <meta charset="UTF-8">
@@ -12,17 +11,27 @@
         <div class="limiter">
             <div class="container-login100">
                 <div class="wrap-login100">
-                    <form class="login100-form validate-form">
+                    <form class="login100-form validate-form" method="POST" action="{% url 'inscription' %}">
+                        {% csrf_token %}
 
                         <span class="login100-form-title"><span class="logge mb-5 animate__animated animate__fadeInDown">BUDGESTION</span></span>
+
+                                                            <!-- Afficher les erreurs -->
+                            {% if error %}
+                            <br>
+                            <div class="alert alert-danger" role="alert">
+                              {{ error }}
+                            </div>
+                            {% endif %}
 
                         <div class="wrap-input100 validate-input mt-5 mb-5" data-validate="Pseudo">
                             <input class="input100" type="text" name="Pseudo" autocomplete="off">
                             <span class="focus-input100" data-placeholder="Pseudo"></span>
                         </div>
 
+
                         <div class="wrap-input100 validate-input mb-5" data-validate="École d'origine">
-                            <input class="input100" type="password" name="École d'origine" autocomplete="off">
+                            <input class="input100" type="text" name="École d'origine" autocomplete="off">
                             <span class="focus-input100" data-placeholder="École d'origine"></span>
                         </div>
 
@@ -40,7 +49,7 @@
                             <button class="login100-form-btn mb-5">Inscription</button>
                             <a href="/" class="txt2 mx-5">Connexion</a>
                         </div>
-                        
+
                     </form>
                 </div>
             </div>

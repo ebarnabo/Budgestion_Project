@@ -12,9 +12,18 @@
         <div class="limiter">
             <div class="container-login100">
                 <div class="wrap-login100">
-                    <form class="login100-form validate-form">
-
+                    <form class="login100-form validate-form" action="{% url 'connexion' %}" method="POST">
+                        {% csrf_token %}
                         <span class="login100-form-title"><span class="logge mb-5">BUDGESTION</span></span>
+
+                                    <!-- Afficher les erreurs -->
+                            {% if error %}
+                            </br>
+                            <div class="alert alert-danger" role="alert">
+                              {{ error }}
+                            </div>
+                            {% endif %}
+
 
                         <div class="wrap-input100 validate-input mt-5 mb-5" data-validate="Pseudo">
                             <input class="input100" type="text" name="Pseudo">

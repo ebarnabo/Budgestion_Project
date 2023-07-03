@@ -19,7 +19,7 @@ from django.urls import path
 from budgestionapp import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.connexion, name='connexion'),
     path('inscription/', views.inscription, name='inscription'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('dashboard-admin/', views.dashboardadmin, name='dashboardadmin'),
