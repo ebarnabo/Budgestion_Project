@@ -213,73 +213,36 @@
 								</div>
 								<table class="table table-hover my-0">
 									<thead>
-										<tr>
-											<th class="text-sub">Transactions</th>
-											<th class="d-none d-xl-table-cell text-sub">Date</th>
-											<th class="d-none d-xl-table-cell text-sub">Montant</th>
-											<th class="text-sub">Type</th>
-											<th class="d-none d-md-table-cell text-sub">Auteur</th>
-										</tr>
+									  <tr>
+										<th class="text-sub">Transactions</th>
+										<th class="d-none d-xl-table-cell text-sub">Date</th>
+										<th class="d-none d-xl-table-cell text-sub">Montant</th>
+										<th class="text-sub">Type</th>
+										<th class="d-none d-md-table-cell text-sub">Auteur</th>
+										<th></th>
+									  </tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td class="text-light">Pretation informatique</td>
-											<td class="text-light d-none d-xl-table-cell">01/01/2023</td>
-											<td class="text-light d-none d-xl-table-cell">300</td>
-											<td><span class="text-light badge bg-success">Revenus</span></td>
-											<td class="text-light d-none d-md-table-cell">Vanessa Tucker</td>
-										</tr>
-										<tr>
-											<td class="text-light">Iphone 18</td>
-											<td class="text-light d-none d-xl-table-cell">01/01/2023</td>
-											<td class="text-light d-none d-xl-table-cell">699</td>
-											<td><span class="text-light badge bg-danger">Achat</span></td>
-											<td class="text-light d-none d-md-table-cell">William Harris</td>
-										</tr>
-										<tr>
-											<td class="text-light">Repas du midi</td>
-											<td class="text-light d-none d-xl-table-cell">01/01/2023</td>
-											<td class="text-light d-none d-xl-table-cell">7</td>
-											<td><span class="text-light badge bg-danger">Achat</span></td>
-											<td class="text-light d-none d-md-table-cell">Sharon Lessman</td>
-										</tr>
-										<tr>
-											<td class="text-light">Argent de poche</td>
-											<td class="text-light d-none d-xl-table-cell">01/01/2023</td>
-											<td class="text-light d-none d-xl-table-cell">31</td>
-											<td><span class="text-light badge bg-success">Revenus</span></td>
-											<td class="text-light d-none d-md-table-cell">Vanessa Tucker</td>
-										</tr>
-										<tr>
-											<td class="text-light">Repas</td>
-											<td class="text-light d-none d-xl-table-cell">01/01/2023</td>
-											<td class="text-light d-none d-xl-table-cell">23</td>
-											<td><span class="text-light badge bg-danger">Achat</span></td>
-											<td class="text-light d-none d-md-table-cell">William Harris</td>
-										</tr>
-										<tr>
-											<td class="text-light">Salaire</td>
-											<td class="text-light d-none d-xl-table-cell">01/01/2023</td>
-											<td class="text-light d-none d-xl-table-cell">32023</td>
-											<td><span class="text-light badge bg-success">Revenus</span></td>
-											<td class="text-light d-none d-md-table-cell">Sharon Lessman</td>
-										</tr>
-										<tr>
-											<td class="text-light">Frais assurance</td>
-											<td class="text-light d-none d-xl-table-cell">01/01/2023</td>
-											<td class="text-light d-none d-xl-table-cell">19</td>
-											<td><span class="text-light badge bg-danger">Done</span></td>
-											<td class="text-light d-none d-md-table-cell">Christina Mason</td>
-										</tr>
-										<tr>
-											<td class="text-light">Pass ALl day in</td>
-											<td class="text-light d-none d-xl-table-cell">01/01/2023</td>
-											<td class="text-light d-none d-xl-table-cell">45</td>
-											<td><span class="text-light badge bg-danger">In progress</span></td>
-											<td class="text-light d-none d-md-table-cell">William Harris</td>
-										</tr>
+									  <tr>
+										<td class="text-light">Pretation informatique</td>
+										<td class="text-light d-none d-xl-table-cell">01/01/2023</td>
+										<td class="text-light d-none d-xl-table-cell">300</td>
+										<td><span class="text-light badge bg-success">Revenus</span></td>
+										<td class="text-light d-none d-md-table-cell">Vanessa Tucker</td>
+										<td><button class="btn btn-danger btn-sm" onclick="deleteRow(this)">Supprimer</button></td>
+									  </tr>
+									  <tr>
+										<td class="text-light">Iphone 18</td>
+										<td class="text-light d-none d-xl-table-cell">01/01/2023</td>
+										<td class="text-light d-none d-xl-table-cell">699</td>
+										<td><span class="text-light badge bg-danger">Achat</span></td>
+										<td class="text-light d-none d-md-table-cell">William Harris</td>
+										<td><button class="btn btn-danger btn-sm" onclick="deleteRow(this)">Supprimer</button></td>
+									  </tr>
+									  <!-- Les autres lignes du tableau avec le bouton de suppression -->
 									</tbody>
-								</table>
+								  </table>
+								  
 							</div>
 						</div>
 					</div>
@@ -417,6 +380,10 @@
 		});
 	</script>
 	<script>
+		function deleteRow(button) {
+			var row = button.parentNode.parentNode; // Obtient la ligne parente du bouton
+			row.parentNode.removeChild(row); // Supprime la ligne du tableau
+		  }
 		// Fonction pour ouvrir la fenêtre modale
 function openModal() {
 	document.getElementById('modal').style.display = 'inline-block';

@@ -134,3 +134,7 @@
 #revenus-admin{
    background: linear-gradient(180deg, rgba(5, 184, 142, 0.89) 0%, rgba(5, 184, 142, 0.89) 0.01%, #489583 100%);
 }
+
+tr:hover{
+   background-color: grey !important;
+}
