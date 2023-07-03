@@ -10,3 +10,7 @@ def inscription(request):
 
 def dashboard(request):
     return render(request, 'dashboard.html')
+
+
+def dashboardadmin(request):
+    return render(request, 'dashboard-admin.html')

@@ -22,5 +22,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('inscription/', views.inscription, name='inscription'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('dashboard-admin/', views.dashboardadmin, name='dashboardadmin'),
     path('admin/', admin.site.urls, name='admin'),
 ]

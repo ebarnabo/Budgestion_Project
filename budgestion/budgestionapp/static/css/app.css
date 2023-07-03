@@ -118,3 +118,19 @@
    scale: 1.02;
 }
 
+.secondary-bg{
+   background-color: #B8B8FF;
+   color:white;
+   box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.25);
+   border-radius: 3px;
+   outline: none !important;
+   border: none;
+}
+
+#depenses-admin{
+   background: linear-gradient(180deg, #E74764 0%, #D60026 100%);
+}
+
+#revenus-admin{
+   background: linear-gradient(180deg, rgba(5, 184, 142, 0.89) 0%, rgba(5, 184, 142, 0.89) 0.01%, #489583 100%);
+}
