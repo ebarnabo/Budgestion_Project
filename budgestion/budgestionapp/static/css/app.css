@@ -101,5 +101,20 @@
     border: none;
 }
 
+.mensuelle{
+   background-color: white;
+   border-radius: 7px;
+   padding: 2px;
+   margin-right: 5%;
+}
 
-/*# sourceMappingURL=app.css.map*/
+.card{
+   cursor:pointer;
+   transition: all 0.5s;
+}
+
+/* Effet sur les zone de graphique */
+.card:hover{
+   scale: 1.02;
+}
+
