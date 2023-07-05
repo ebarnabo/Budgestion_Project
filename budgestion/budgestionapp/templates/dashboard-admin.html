@@ -32,7 +32,7 @@
 					</li>
 
 					<li class="sidebar-item">
-						<a class="sidebar-link" href="#">
+						<a class="sidebar-link" href="{% url 'logout' %}">
 							<i class="align-middle" data-feather="log-in"></i> <span class="align-middle">Déconnexion</span>
 						</a>
 					</li>
@@ -53,12 +53,13 @@
 							<div class="modal-dialog modal-dialog-centered">
 							  <div class="modal-content">
 								<h2 class="text-center mb-4">Ajouter un compte</h2>
-								<div class="form-group">
-								  <input type="text" id="nom" class="form-control mb-3" placeholder="Nom">
-								  <input type="text" id="ecole" class="form-control mb-3" placeholder="École d'origine">
-								  <input type="mail" id="date" class="form-control mb-3" placeholder="Mail">
+								<form class="form-group" method = "POST" action = "{% url 'addUser' %}">
+									{% csrf_token %}
+								  	<input type="text" name="login" class="form-control mb-3" placeholder="Login">
+								  	<input type="text" name="ecole" class="form-control mb-3" placeholder="École d'origine">
+									<input type="password" name="passe" class="form-control mb-3" placeholder="Mot de passe">
 								  <button id="btn-valider" class="btn btn-primary">Valider</button>
-								</div>
+								</form>
 							  </div>
 							</div>
 						  </div>
@@ -66,7 +67,7 @@
 						<li class="nav-item dropdown ms-5">
 							<a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown"><i class="align-middle user" data-feather="settings"></i></a>
 							<div class="dropdown-menu dropdown-menu-end">
-								<a class="dropdown-item" href="#">Déconnexion</a>
+								<a class="dropdown-item" href="{% url 'logout' %}">Déconnexion</a>
 							</div>
 						</li>
 					</ul>
@@ -97,10 +98,6 @@
 													</div>
 												</div>
 												<h1 class="mt-1 mb-3 text-light" id="solde-value"></h1>
-												<div class="mb-0">
-													<span class="text-danger mensuelle"> <i class="mdi mdi-arrow-bottom-right"></i> -3.65% </span>
-													<span class="text-light">Evolution mensuelle</span>
-												</div>
 											</div>
 										</div>
 									</div>
@@ -119,10 +116,6 @@
 													</div>
 												</div>
 												<h1 class="mt-1 mb-3 text-light" id="revenus-value">14.212</h1>
-												<div class="mb-0">
-													<span class="text-success mensuelle"> <i class="mdi mdi-arrow-bottom-right"></i> 5.25% </span>
-													<span class="text-light">Evolution mensuelle</span>
-												</div>
 											</div>
 										</div>
 									</div>
@@ -141,10 +134,6 @@
 													</div>
 												</div>
 												<h1 class="mt-1 mb-3 text-light" id="depense-value">21 300</h1>
-												<div class="mb-0">
-													<span class="text-success mensuelle"> <i class="mdi mdi-arrow-bottom-right"></i> 6.65% </span>
-													<span class="text-light">Evolution mensuelle</span>
-												</div>
 											</div>
 										</div>
 									</div>
@@ -209,11 +198,11 @@
 											<tbody>
 												<tr>
 													<td>Revenus</td>
-													<td class="text-end">4306</td>
+													<td class="text-end">{{somme_revenus}}</td>
 												</tr>
 												<tr>
 													<td>Dépenses</td>
-													<td class="text-end">3801</td>
+													<td class="text-end">{{somme_depenses}}</td>
 												</tr>
 											</tbody>
 										</table>
@@ -242,29 +231,86 @@
 									  </tr>
 									</thead>
 									<tbody>
-									  <tr>
-										<td class="text-light">Pretation informatique</td>
-										<td class="text-light d-none d-xl-table-cell">01/01/2023</td>
-										<td class="text-light d-none d-xl-table-cell">300</td>
-										<td><span class="text-light badge bg-success">Revenus</span></td>
-										<td class="text-light d-none d-md-table-cell">Vanessa Tucker</td>
-										<td><button class="btn btn-danger btn-sm" onclick="deleteRow(this)">Supprimer</button></td>
-									  </tr>
-									  <tr>
-										<td class="text-light">Iphone 18</td>
-										<td class="text-light d-none d-xl-table-cell">01/01/2023</td>
-										<td class="text-light d-none d-xl-table-cell">699</td>
-										<td><span class="text-light badge bg-danger">Achat</span></td>
-										<td class="text-light d-none d-md-table-cell">William Harris</td>
-										<td><button class="btn btn-danger btn-sm" onclick="deleteRow(this)">Supprimer</button></td>
-									  </tr>
-									  <!-- Les autres lignes du tableau avec le bouton de suppression -->
+									{% for transaction in liste_transactions %}
+									<tr>
+										<td class="text-light">{{ transaction.description }}</td>
+										<td class="text-light d-none d-xl-table-cell">{{ transaction.jour }}</td>
+										<td class="text-light d-none d-xl-table-cell">{{ transaction.montant }}</td>
+										<td>
+											{% if transaction.type == "Achat" %}
+											<span class="text-light badge bg-danger">Achat</span>
+											{% elif transaction.type == "Revenu" %}
+											<span class="text-light badge bg-success">Revenu</span>
+											{% endif %}
+										</td>
+										<td class="text-light d-none d-xl-table-cell">{{ transaction.idEtudiant.login }}</td>
+										<td>
+										  <form method="POST" action="{% url 'delLigneAdmin' %}">
+											{% csrf_token %}
+												<input type="hidden" name="delete_entry_id" value="{{ transaction.id }}">
+											  <input type="hidden" name="delete_entry_idEtudiant" value="{{ transaction.idEtudiant.id }}">
+											  	<input type="hidden" name="delete_entry_type" value="{{ transaction.type }}">
+												<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette entrée ?)">Supprimer</button>
+										  </form>
+										</td>
+
+									</tr>
+									{% endfor %}
 									</tbody>
 								  </table>
 								  
 							</div>
 						</div>
 					</div>
+
+
+					<div class="row">
+						<div class="col-12 col-lg-12 col-xxl-12 d-flex">
+							<div class="card flex-fill" id="userList">
+								<div class="card-header" id="userList">
+
+									<h5 class="card-title mb-0 text-light">Liste des utilisateurs</h5>
+								</div>
+								<table class="table table-hover my-0">
+									<thead>
+									  <tr>
+										<th class="text-sub">Login</th>
+										<th class="d-none d-xl-table-cell text-sub">Nom</th>
+										<th class="d-none d-xl-table-cell text-sub">Prénom</th>
+										<th class="d-none d-xl-table-cell text-sub">Date de naissance</th>
+										  <th class="d-none d-xl-table-cell text-sub">Etablissement</th>
+										<th class="d-none d-md-table-cell text-sub">Mail</th>
+										<th class="d-none d-md-table-cell text-sub">Budget</th>
+										<th></th>
+									  </tr>
+									</thead>
+									<tbody>
+									{% for user in liste_utilisateurs %}
+									<tr>
+										<td class="text-light">{{ user.login }}</td>
+										<td class="text-light d-none d-xl-table-cell">{{ user.nom }}</td>
+										<td class="text-light d-none d-xl-table-cell">{{ user.prenom }}</td>
+										<td class="text-light d-none d-xl-table-cell">{{ user.dateNaissance }}</td>
+										<td class="text-light d-none d-xl-table-cell">{{ user.etablissement }}</td>
+										<td class="text-light d-none d-xl-table-cell">{{ user.mail }}</td>
+										<td class="text-light d-none d-xl-table-cell">{{ user.budget }}</td>
+										<td>
+										  <form method="POST" action="{% url 'delUser' %}">
+											{% csrf_token %}
+												<input type="hidden" name="delete_user_id" value="{{ user.id }}">
+												<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer l'utilisateur {{user.login}} ?)">Supprimer</button>
+										  </form>
+										</td>
+
+									</tr>
+									{% endfor %}
+									</tbody>
+								  </table>
+
+							</div>
+						</div>
+					</div>
+
 
 				</div>
 			</main>
@@ -289,15 +335,15 @@
 		// Variables 
 
 		// Revenus globaux
-		revenus = 4306;
+		revenus = "{{somme_revenus}}";
 
 		// Dépense globales
-		depense = 300;
+		depense = "{{somme_depenses}}";
 
-		// Dépenses générales
-		user = 200;
+		// Nombre total d'user
+		user = "{{nombre_utilisateurs}}";
 
-		pseudo= "Valeur de pseudo à changer en Js";
+		pseudo= "{{ pseudo }}";
 
 		// Modification des valeurs HTML
 		document.getElementById('depense-value').innerHTML = depense;

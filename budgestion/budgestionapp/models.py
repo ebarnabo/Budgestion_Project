@@ -9,6 +9,7 @@ class Etudiant(models.Model):
     nom = models.CharField(max_length=200, null=True, blank=True)
     prenom = models.CharField(max_length=200, null=True, blank=True)
     dateNaissance = models.DateField(null=True, blank=True)
+    etablissement = models.CharField(max_length=200, null=True, blank=True)
     mail = models.EmailField(null=True, blank=True)
     budget = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     is_admin = models.BooleanField(default=False, null=True, blank=True)
@@ -18,6 +19,9 @@ class Etudiant(models.Model):
 
     def set_mdp(self, mdp):
         self.mdp_hash = make_password(mdp)
+
+    def set_budget(self):
+        self.budget = getSolde(self.id)
 
 
 
@@ -70,3 +74,24 @@ def getSolde(idEtudiant):
     solde = total_revenus - total_depenses
     return solde
 
+def getSommeRevenusAll():
+    somme_revenus = Revenu.objects.aggregate(total_revenus=Sum('montant'))
+    return somme_revenus['total_revenus'] if somme_revenus['total_revenus'] else 0
+
+def getSommeDepensesAll():
+    somme_depenses = Achat.objects.aggregate(total_depenses=Sum('montant'))
+    return somme_depenses['total_depenses'] if somme_depenses['total_depenses'] else 0
+
+def getListeDepensesAll():
+    liste_depenses = Achat.objects.all()
+    return liste_depenses
+
+def getListeRevenusAll():
+    liste_revenus = Revenu.objects.all()
+    return liste_revenus
+
+def getSoldeAll():
+    total_revenus = getSommeRevenusAll()
+    total_depenses = getSommeDepensesAll()
+    solde = total_revenus - total_depenses
+    return solde

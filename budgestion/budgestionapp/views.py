@@ -53,6 +53,7 @@ def inscription(request):
         # Créer une instance de l'étudiant
         etudiant = Etudiant(
             login=login,
+            etablissement=ecole_origine,
             mdp_hash=make_password(password)
         )
 
@@ -145,11 +146,102 @@ def addLigne(request):
     return render(request, 'dashboard.html')
 
 
+def addUser(request):
+    if request.method == 'POST':
 
+        login = request.POST.get('login')
+        ecole = request.POST.get('ecole')
+        passe = request.POST.get('passe')
+        print(login, ecole, passe)
+
+        etudiant = Etudiant.objects.create(login=login, etablissement=ecole)
+        etudiant.set_mdp(passe)
+        etudiant.save()
+
+
+
+        return redirect('dashboardadmin')  # Rediriger vers la page de tableau de bord après l'ajout
+
+    return render(request, 'dashboard-admin.html')
+
+def delUser(request):
+    if request.method == 'POST':
+
+        user_id = request.POST.get('delete_user_id')
+
+        etudiant = Etudiant.objects.get(id=user_id)
+
+        etudiant.delete()
+        return redirect('dashboardadmin')  # Rediriger vers la page de tableau de bord après l'ajout
+
+    return render(request, 'dashboard-admin.html')
 
 
 
 def dashboardadmin(request):
+    if not request.session.get('etudiant_id'):
+        # La session n'est pas connectée, rediriger vers la page d'index
+        return redirect('connexion')
+
+    # Récupérer l'ID de l'étudiant en session
+    etudiant_id = request.session.get('etudiant_id')
+
+    # Récupérer l'étudiant correspondant à l'ID
+    etudiant = Etudiant.objects.get(id=etudiant_id)
+
+    #if not etudiant.is_admin:
+     #   return redirect('dashboard')
+
+    somme_revenus = getSommeRevenusAll()
+    somme_depenses = getSommeDepensesAll()
+    liste_depenses = getListeDepensesAll()
+    liste_revenus = getListeRevenusAll()
+
+    liste_transactions = list(liste_depenses) + list(liste_revenus)
+    import datetime
+
+    reference_date = datetime.datetime(1900, 1, 1)
+
+    liste_transactions = sorted(liste_transactions, key=lambda t: (
+                reference_date - datetime.datetime.combine(t.jour, datetime.datetime.min.time())).total_seconds(),
+                                reverse=False)
+
+    solde = getSoldeAll()
+
+    nombre_utilisateurs = Etudiant.objects.count()
+    liste_utilisateurs = Etudiant.objects.all()
+
+    for user in liste_utilisateurs:
+        user.set_budget()
+
+
+    return render(request, 'dashboard-admin.html', {
+        'pseudo': etudiant.login,
+        'somme_revenus': somme_revenus,
+        'somme_depenses': somme_depenses,
+        'liste_depenses': liste_depenses,
+        'liste_revenus': liste_revenus,
+        'liste_transactions': liste_transactions,
+        'solde': solde,
+        'nombre_utilisateurs': nombre_utilisateurs,
+        'liste_utilisateurs': liste_utilisateurs
+    })
+
+
+def delLigneAdmin(request):
+    if request.method == 'POST':
+
+        entry_id = request.POST.get('delete_entry_id')
+        entry_idEtudiant = request.POST.get('delete_entry_idEtudiant')
+        entry_type = request.POST.get('delete_entry_type')
+        print(entry_id, entry_type)
+
+        if entry_type == 'Achat':
+            entry = Achat.objects.get(id=entry_id, idEtudiant=entry_idEtudiant)
+        elif entry_type == 'Revenu':
+            entry = Revenu.objects.get(id=entry_id, idEtudiant=entry_idEtudiant)
+
+        entry.delete()
+        return redirect('dashboardadmin')  # Rediriger vers la page de tableau de bord après l'ajout
+
     return render(request, 'dashboard-admin.html')
-
-

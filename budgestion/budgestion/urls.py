@@ -27,4 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     path('addLigne/', views.addLigne, name='addLigne'),
     path('delLigne/', views.delLigne, name='delLigne'),
+    path('delLigneAdmin/', views.delLigneAdmin, name='delLigneAdmin'),
+    path('addUser/', views.addUser, name='addUser'),
+    path('delUser/', views.delUser, name='delUser'),
 ]

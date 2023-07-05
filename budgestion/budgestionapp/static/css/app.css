@@ -7,6 +7,9 @@
  #historique{
     background: rgb(147,129,255);
  }
+  #userList{
+    background: black;
+ }
  .text-sub{
     color: #FFD8BE !important;
  }
