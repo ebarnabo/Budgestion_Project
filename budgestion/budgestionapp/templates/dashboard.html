@@ -14,6 +14,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -154,21 +155,53 @@
 						</div>				
 					</div>
 
-					<div class="row">
-						<div class="col-xl-6 col-xxl-8">
-							<div class="card flex-fill w-100">
-								<div class="card-header">
+					<div class="row d-flex align-items-stretch">
+						<div class="col-xl-8 col-xxl-8">
+							<div class="card flex-fill w-100" id="historique">
+								<div class="card-header" id="historique">
+									<h5 class="card-title mb-0 text-light">Historique des transactions</h5>
+								</div>
+								<table class="table table-hover my-0">
+									<thead>
+									  <tr>
+										<th class="text-sub">Transactions</th>
+										<th class="d-none d-xl-table-cell text-sub">Date</th>
+										<th class="d-none d-xl-table-cell text-sub">Montant</th>
+										<th class="text-sub">Type</th>
+										<th></th>
+									  </tr>
+									</thead>
+									<tbody>
+									{% for transaction in liste_transactions %}
+									<tr>
+										<td class="text-light">{{ transaction.description }}</td>
+										<td class="text-light d-none d-xl-table-cell">{{ transaction.jour }}</td>
+										<td class="text-light d-none d-xl-table-cell">{{ transaction.montant }}</td>
+										<td>
+											{% if transaction.type == "Achat" %}
+											<span class="text-light badge bg-danger">Achat</span>
+											{% elif transaction.type == "Revenu" %}
+											<span class="text-light badge bg-success">Revenu</span>
+											{% endif %}
+										</td>
+										<td>
+											<form method="POST" action="{% url 'delLigne' %}" onsubmit="return confirmDelete(event)">
+											{% csrf_token %}
+												<input type="hidden" name="delete_entry_id" value="{{ transaction.id }}">
+											  	<input type="hidden" name="delete_entry_type" value="{{ transaction.type }}">
+												  <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+										  </form>
+										</td>
 
-									<h5 class="card-title mb-0 text-dark">Évolution du solde</h5>
-								</div>
-								<div class="card-body py-3">
-									<div class="chart chart-sm">
-										<canvas id="chartjs-dashboard-line"></canvas>
-									</div>
-								</div>
+									</tr>
+									{% endfor %}
+									  <!-- Les autres lignes du tableau avec le bouton de suppression -->
+									</tbody>
+								  </table>
+
 							</div>
 						</div>
-						<div class="col-xl-6 col-xxl-4">
+						<div class="col-xl-4 col-xxl-4">
 							<div class="card flex-fill w-100">
 								<div class="card-header">
 
@@ -200,54 +233,7 @@
 						</div>
 					</div>
 
-					<div class="row">
-						<div class="col-12 col-lg-12 col-xxl-12 d-flex">
-							<div class="card flex-fill" id="historique">
-								<div class="card-header" id="historique">
 
-									<h5 class="card-title mb-0 text-light">Historique des transactions</h5>
-								</div>
-								<table class="table table-hover my-0">
-									<thead>
-									  <tr>
-										<th class="text-sub">Transactions</th>
-										<th class="d-none d-xl-table-cell text-sub">Date</th>
-										<th class="d-none d-xl-table-cell text-sub">Montant</th>
-										<th class="text-sub">Type</th>>
-										<th></th>
-									  </tr>
-									</thead>
-									<tbody>
-									{% for transaction in liste_transactions %}
-									<tr>
-										<td class="text-light">{{ transaction.description }}</td>
-										<td class="text-light d-none d-xl-table-cell">{{ transaction.jour }}</td>
-										<td class="text-light d-none d-xl-table-cell">{{ transaction.montant }}</td>
-										<td>
-											{% if transaction.type == "Achat" %}
-											<span class="text-light badge bg-danger">Achat</span>
-											{% elif transaction.type == "Revenu" %}
-											<span class="text-light badge bg-success">Revenu</span>
-											{% endif %}
-										</td>
-										<td>
-										  <form method="POST" action="{% url 'delLigne' %}">
-											{% csrf_token %}
-												<input type="hidden" name="delete_entry_id" value="{{ transaction.id }}">
-											  	<input type="hidden" name="delete_entry_type" value="{{ transaction.type }}">
-												<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette entrée ?)">Supprimer</button>
-										  </form>
-										</td>
-
-									</tr>
-									{% endfor %}
-									  <!-- Les autres lignes du tableau avec le bouton de suppression -->
-									</tbody>
-								  </table>
-
-							</div>
-						</div>
-					</div>
 
 				</div>
 			</main>
@@ -406,6 +392,25 @@ function openModal() {
 	console.log('Type:', type);
 	closeModal();
   });
+
+  function confirmDelete(event) {
+	event.preventDefault(); // Empêche la soumission du formulaire par défaut
+  
+	Swal.fire({
+	  title: 'Êtes-vous sûr de vouloir supprimer cette transaction ?',
+	  icon: 'warning',
+	  showCancelButton: true,
+	  confirmButtonText: 'Supprimer',
+	  cancelButtonText: 'Annuler',
+	  reverseButtons: true
+	}).then((result) => {
+	  if (result.isConfirmed) {
+		event.target.submit(); // Soumet le formulaire si l'utilisateur a confirmé
+	  }
+	});
+  
+	return false; // Annule également la soumission du formulaire
+  }
   
 	</script>
 

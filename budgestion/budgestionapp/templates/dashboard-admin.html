@@ -14,6 +14,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -171,11 +172,11 @@
 							<div class="card flex-fill w-100">
 								<div class="card-header">
 
-									<h5 class="card-title mb-0 text-dark">Évolution du solde</h5>
+									<h5 class="card-title mb-0 text-dark">Classement des budgets des utilisateurs</h5>
 								</div>
 								<div class="card-body py-3">
 									<div class="chart chart-sm">
-										<canvas id="chartjs-dashboard-line"></canvas>
+										<canvas id="budgetChart"></canvas>
 									</div>
 								</div>
 							</div>
@@ -245,13 +246,13 @@
 										</td>
 										<td class="text-light d-none d-xl-table-cell">{{ transaction.idEtudiant.login }}</td>
 										<td>
-										  <form method="POST" action="{% url 'delLigneAdmin' %}">
-											{% csrf_token %}
+											<form method="POST" action="{% url 'delLigneAdmin' %}" onsubmit="return confirmDelete(event)">
+												{% csrf_token %}
 												<input type="hidden" name="delete_entry_id" value="{{ transaction.id }}">
-											  <input type="hidden" name="delete_entry_idEtudiant" value="{{ transaction.idEtudiant.id }}">
-											  	<input type="hidden" name="delete_entry_type" value="{{ transaction.type }}">
-												<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette entrée ?)">Supprimer</button>
-										  </form>
+												<input type="hidden" name="delete_entry_idEtudiant" value="{{ transaction.idEtudiant.id }}">
+												<input type="hidden" name="delete_entry_type" value="{{ transaction.type }}">
+												<button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+											  </form>
 										</td>
 
 									</tr>
@@ -295,11 +296,11 @@
 										<td class="text-light d-none d-xl-table-cell">{{ user.mail }}</td>
 										<td class="text-light d-none d-xl-table-cell">{{ user.budget }}</td>
 										<td>
-										  <form method="POST" action="{% url 'delUser' %}">
-											{% csrf_token %}
+											<form method="POST" action="{% url 'delUser' %}" onsubmit="return confirmDeleteAccount(event)">
+												{% csrf_token %}
 												<input type="hidden" name="delete_user_id" value="{{ user.id }}">
-												<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer l'utilisateur {{user.login}} ?)">Supprimer</button>
-										  </form>
+												<button type="submit" class="btn btn-danger btn-sm" data-username="{{ user.login }}">Supprimer</button>
+											  </form>
 										</td>
 
 									</tr>
@@ -465,6 +466,52 @@ function openModal() {
   function closeModal() {
 	document.getElementById('modal').style.display = 'none';
   }
+
+  document.addEventListener('DOMContentLoaded', function() {
+	// Récupérer les données des budgets et des pseudos des utilisateurs
+	const budgets = [
+	  {% for user in liste_utilisateurs %}
+		{{ user.budget }},
+	  {% endfor %}
+	];
+  
+	const pseudos = [
+	  {% for user in liste_utilisateurs %}
+		'{{ user.login }}',
+	  {% endfor %}
+	];
+  
+	// Créer le graphique avec Chart.js
+	const ctx = document.getElementById('budgetChart').getContext('2d');
+	const chart = new Chart(ctx, {
+	  type: 'bar',
+	  data: {
+		labels: pseudos,
+		datasets: [{
+		  label: 'Budget',
+		  data: budgets,
+		  backgroundColor: '#1CBB8C', // Couleur de fond des barres
+		  borderColor: 'rgba(75, 192, 192, 1)', // Couleur de la bordure des barres
+		  borderWidth: 1
+		}]
+	  },
+	  options: {
+		scales: {
+		  y: {
+			beginAtZero: true,
+			ticks: {
+			  stepSize: 1000 // Pas de l'axe des y
+			}
+		  }
+		},
+		plugins: {
+		  legend: {
+			display: false // Masquer la légende
+		  }
+		}
+	  }
+	});
+  });
   
   // Écouteur d'événement pour le clic sur le bouton d'ajout
   document.getElementById('btn-add').addEventListener('click', openModal);
@@ -477,6 +524,45 @@ function openModal() {
 	console.log('Type:', type);
 	closeModal();
   });
+
+  function confirmDelete(event) {
+	event.preventDefault(); // Empêche la soumission du formulaire par défaut
+  
+	Swal.fire({
+	  title: 'Êtes-vous sûr de vouloir supprimer cette transaction ?',
+	  icon: 'warning',
+	  showCancelButton: true,
+	  confirmButtonText: 'Supprimer',
+	  cancelButtonText: 'Annuler',
+	  reverseButtons: true
+	}).then((result) => {
+	  if (result.isConfirmed) {
+		event.target.submit(); // Soumet le formulaire si l'utilisateur a confirmé
+	  }
+	});
+  
+	return false; // Annule également la soumission du formulaire
+  }
+  function confirmDeleteAccount(event) {
+	event.preventDefault(); // Empêche la soumission du formulaire par défaut
+
+  const username = event.target.querySelector('button').getAttribute('data-username');
+
+  Swal.fire({
+    title: `Êtes-vous sûr de vouloir supprimer l'utilisateur ${username} ?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Supprimer',
+    cancelButtonText: 'Annuler',
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      event.target.submit(); // Soumet le formulaire si l'utilisateur a confirmé
+    }
+  });
+
+  return false; 
+  }
   
 	</script>
 
