@@ -20,8 +20,11 @@ from budgestionapp import views
 
 urlpatterns = [
     path('', views.connexion, name='connexion'),
+    path('logout/', views.logout, name='logout'),
     path('inscription/', views.inscription, name='inscription'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('dashboard-admin/', views.dashboardadmin, name='dashboardadmin'),
     path('admin/', admin.site.urls, name='admin'),
+    path('addLigne/', views.addLigne, name='addLigne'),
+    path('delLigne/', views.delLigne, name='delLigne'),
 ]
