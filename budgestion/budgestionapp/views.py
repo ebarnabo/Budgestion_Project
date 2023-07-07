@@ -94,8 +94,8 @@ def dashboard(request):
 
     solde = getSolde(etudiant_id)
 
-
     return render(request, 'dashboard.html', {
+        'isAdmin': etudiant.is_admin,
         'pseudo': etudiant.login,
         'somme_revenus': somme_revenus,
         'somme_depenses': somme_depenses,
@@ -189,8 +189,8 @@ def dashboardadmin(request):
     # Récupérer l'étudiant correspondant à l'ID
     etudiant = Etudiant.objects.get(id=etudiant_id)
 
-    #if not etudiant.is_admin:
-     #   return redirect('dashboard')
+    if not etudiant.is_admin:
+        return redirect('dashboard')
 
     somme_revenus = getSommeRevenusAll()
     somme_depenses = getSommeDepensesAll()
@@ -216,6 +216,7 @@ def dashboardadmin(request):
 
 
     return render(request, 'dashboard-admin.html', {
+        'isAdmin': etudiant.is_admin,
         'pseudo': etudiant.login,
         'somme_revenus': somme_revenus,
         'somme_depenses': somme_depenses,

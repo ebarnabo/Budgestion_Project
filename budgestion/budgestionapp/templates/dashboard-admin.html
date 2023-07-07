@@ -27,11 +27,17 @@
 					</li>
 					<h1 class="align-middle text-center mb-5">BUDGESTION</h1>
 					<li class="sidebar-item mb-3">			
-						<a class="sidebar-link" href="#">
+						<a class="sidebar-link" href="{% url 'dashboard' %}">
 						<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
 						</a>
 					</li>
-
+					{% if isAdmin %}
+					<li class="sidebar-item mb-3">
+						<a class="sidebar-link" href="{% url 'dashboardadmin' %}">
+						<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard Admin</span>
+						</a>
+					</li>
+					{% endif %}
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="{% url 'logout' %}">
 							<i class="align-middle" data-feather="log-in"></i> <span class="align-middle">Déconnexion</span>
@@ -490,8 +496,8 @@ function openModal() {
 		datasets: [{
 		  label: 'Budget',
 		  data: budgets,
-		  backgroundColor: '#1CBB8C', // Couleur de fond des barres
-		  borderColor: 'rgba(75, 192, 192, 1)', // Couleur de la bordure des barres
+		  backgroundColor: budgets.map(budget => budget < 0 ? window.theme.danger : window.theme.success), // Couleur de fond des barres
+		  borderColor: 'black' , // Couleur de la bordure des barres
 		  borderWidth: 1
 		}]
 	  },

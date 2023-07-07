@@ -31,6 +31,13 @@
 						<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
 						</a>
 					</li>
+					{% if isAdmin %}
+					<li class="sidebar-item mb-3">
+						<a class="sidebar-link" href="{% url 'dashboardadmin' %}">
+						<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard Admin</span>
+						</a>
+					</li>
+					{% endif %}
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="{% url 'logout' %}">

@@ -12,7 +12,7 @@ class Etudiant(models.Model):
     etablissement = models.CharField(max_length=200, null=True, blank=True)
     mail = models.EmailField(null=True, blank=True)
     budget = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    is_admin = models.BooleanField(default=False, null=True, blank=True)
+    is_admin = models.BooleanField(default=False, blank=True)
 
 
     # etablissement = models.CharField(max_length=200, choices=API_CHOICES)
