@@ -141,3 +141,9 @@
 tr:hover{
    background-color: grey !important;
 }
+
+.custom-form {
+   width: 80%;
+   margin: 0 auto;
+ }
+ 

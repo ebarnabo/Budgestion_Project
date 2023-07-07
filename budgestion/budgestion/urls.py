@@ -30,4 +30,6 @@ urlpatterns = [
     path('delLigneAdmin/', views.delLigneAdmin, name='delLigneAdmin'),
     path('addUser/', views.addUser, name='addUser'),
     path('delUser/', views.delUser, name='delUser'),
+    path('profile/', views.profile, name='profile'),
+    
 ]
