@@ -18,7 +18,7 @@ class Command(BaseCommand):
                 'dateNaissance': '1980-01-01',
                 'etablissement': 'Etablissement 2',
                 'mail': 'admin@example.com',
-                'budget': 150000.00,
+                'budget': 15000,
                 'is_admin': True,
             },
             {
@@ -29,7 +29,7 @@ class Command(BaseCommand):
                 'dateNaissance': '2000-01-01',
                 'etablissement': 'Etablissement 1',
                 'mail': 'etudiant1@example.com',
-                'budget': 1000.00,
+                'budget': 1000,
                 'is_admin': False,
             },
             {
@@ -40,7 +40,7 @@ class Command(BaseCommand):
                 'dateNaissance': '2000-02-02',
                 'etablissement': 'Etablissement 2',
                 'mail': 'etudiant2@example.com',
-                'budget': 1500.00,
+                'budget': 1500,
                 'is_admin': False,
             },
 

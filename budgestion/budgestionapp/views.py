@@ -2,13 +2,13 @@ from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.hashers import check_password
 from .models import *
+from datetime import datetime
 
 
 
 # Create your views here.
 
-def profile(request):
-    return render(request, 'profile.html')    
+
 
 
 def connexion(request):
@@ -248,3 +248,80 @@ def delLigneAdmin(request):
         return redirect('dashboardadmin')  # Rediriger vers la page de tableau de bord après l'ajout
 
     return render(request, 'dashboard-admin.html')
+
+
+def profile(request):
+
+    if not  request.session.get('etudiant_id'):
+        # La session n'est pas connectée, rediriger vers la page d'index
+        return redirect('connexion')
+
+    # Récupérer l'ID de l'étudiant en session
+    etudiant_id = request.session.get('etudiant_id')
+
+    # Récupérer l'étudiant correspondant à l'ID
+    etudiant = Etudiant.objects.get(id=etudiant_id)
+    date_naissance = etudiant.dateNaissance
+
+    if date_naissance is not None:
+
+        # Convertir la date en format souhaité
+        valueDate = date_naissance.strftime('%d/%m/%Y')
+    else:
+        valueDate = "N/A"  # Ou toute autre valeur par défaut que vous souhaitez afficher
+
+    return render(request, 'profile.html', {
+        'etudiant': etudiant,
+        'valueDate' : valueDate,
+    })
+def editEtudiant(request):
+    if request.method == 'POST':
+        # Récupérer l'ID de l'étudiant en session
+        etudiant_id = request.session.get('etudiant_id')
+
+        # Récupérer l'étudiant correspondant à l'ID
+        etudiant = Etudiant.objects.get(id=etudiant_id)
+
+
+
+        etudiant.login = request.POST.get('pseudo')
+        etudiant.nom = request.POST.get('nom')
+        etudiant.prenom = request.POST.get('prenom')
+
+        date_naissance_str = request.POST.get('date_naissance')
+        date_naissance = datetime.strptime(date_naissance_str, '%Y-%m-%d').strftime('%Y-%m-%d')
+        etudiant.dateNaissance = date_naissance
+
+        etudiant.etablissement = request.POST.get('etablissement')
+        etudiant.mail = request.POST.get('mail')
+
+        etudiant.save()
+
+        return redirect('profile')  # Rediriger vers la page de tableau de bord après l'ajout
+
+    return render(request, 'profile.html')
+
+def editEtudiantPasse(request):
+    if request.method == 'POST':
+        # Récupérer l'ID de l'étudiant en session
+        etudiant_id = request.session.get('etudiant_id')
+
+        # Récupérer l'étudiant correspondant à l'ID
+        etudiant = Etudiant.objects.get(id=etudiant_id)
+
+        passe = request.POST.get('ancien_mot_de_passe')
+        # Si l'ancien mdp est saisi
+        if passe is not None:
+            print(passe)
+            if check_password(passe, etudiant.mdp_hash):
+                print("checkValide")
+                if request.POST.get('nouveau_mot_de_passe') == request.POST.get('confirmer_mot_de_passe'):
+                # Si le nouveau mdp correspond à la confirmation
+                    print("modifié")
+                    etudiant.set_mdp(request.POST.get('nouveau_mot_de_passe'))
+
+        etudiant.save()
+
+        return redirect('profile')  # Rediriger vers la page de tableau de bord après l'ajout
+
+    return render(request, 'profile.html')
