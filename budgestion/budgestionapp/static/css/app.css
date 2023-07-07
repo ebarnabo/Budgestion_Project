@@ -47,8 +47,12 @@
  }
 
  .theme{
-    background-color: #9381FF;
+    background-color: #9381FF !important;
+    outline: none !important;
+    border: none;
+    color:white;
  }
+ 
  item.active>.sidebar-link svg{
     color: #9381FF !important;
  }
@@ -146,4 +150,5 @@ tr:hover{
    width: 80%;
    margin: 0 auto;
  }
+ 
  

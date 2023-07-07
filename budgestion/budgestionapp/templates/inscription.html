@@ -31,9 +31,12 @@
 
 
                         <div class="wrap-input100 validate-input mb-3" data-validate="École d'origine">
-                            <input class="input100" type="text" name="École d'origine" autocomplete="off">
-                            <span class="focus-input100" data-placeholder="École d'origine"></span>
+                          <input class="input100" type="text" id="searchInput" name="École d'origine" autocomplete="off">
+                          <span class="focus-input100" data-placeholder="École d'origine"></span>
                         </div>
+                        <div id="results"></div>
+                        
+                        
 
                         <div class="wrap-input100 validate-input mb-3" data-validate="Nom">
                             <input class="input100" type="text" name="Nom" autocomplete="off">
@@ -91,6 +94,114 @@
             input.addEventListener('input', updatePlaceholder);
         });
         })();
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        var apiUrl = "https://data.education.gouv.fr/api/v2/catalog/datasets/fr-en-annuaire-education/records";
+        var searchInput = document.getElementById("searchInput");
+        var resultsContainer = document.getElementById("resultsContainer");
+      
+        // Fonction pour mettre à jour les résultats de recherche
+        function updateResults(results) {
+          resultsContainer.innerHTML = ""; // Effacer les résultats précédents
+      
+          // Créer un élément de liste pour chaque résultat
+          results.forEach(function(item) {
+            var listItem = document.createElement("li");
+            listItem.textContent = item.fields.name;
+      
+            // Écouteur d'événements pour sélectionner une école
+            listItem.addEventListener("click", function() {
+              searchInput.value = item.fields.name;
+              resultsContainer.innerHTML = ""; // Effacer les résultats après la sélection
+            });
+      
+            resultsContainer.appendChild(listItem);
+          });
+      
+          // Afficher ou masquer les résultats en fonction du nombre de résultats
+          resultsContainer.style.display = results.length > 0 ? "block" : "none";
+        }
+      
+        // Événement de saisie dans la zone de recherche
+        searchInput.addEventListener("input", function() {
+          var searchQuery = searchInput.value.trim();
+      
+          if (searchQuery.length < 2) {
+            resultsContainer.innerHTML = ""; // Effacer les résultats si la requête de recherche est trop courte
+            return;
+          }
+      
+          var queryParams = new URLSearchParams({
+            select: searchQuery,
+            limit: 10,
+            offset: 0
+          });
+          var apiUrlWithParams = apiUrl + "?" + queryParams;
+      
+          // Récupérer les données depuis l'API
+          fetch(apiUrlWithParams)
+            .then(function(response) {
+              if (response.ok) {
+                return response.json();
+              }
+              throw new Error("La réponse du réseau n'est pas valide.");
+            })
+            .then(function(data) {
+              updateResults(data);
+            })
+            .catch(function(error) {
+              console.log("Erreur :", error.message);
+            });
+        });
+      
+        // Masquer les résultats lorsque l'on clique en dehors
+        document.addEventListener("click", function(event) {
+          if (!resultsContainer.contains(event.target)) {
+            resultsContainer.innerHTML = "";
+          }
+        });
+      });
+      
+    </script>
+
+    <script>
+      const searchInput = document.getElementById('searchInput');
+    const resultsContainer = document.getElementById('results');
+
+    // Écouteur d'événement pour la saisie dans le champ de recherche
+    searchInput.addEventListener('input', function(event) {
+      const searchTerm = event.target.value.trim();
+
+      // Vider les résultats précédents
+      resultsContainer.innerHTML = '';
+
+      if (searchTerm !== '') {
+        // Appel de l'API pour récupérer les collèges correspondants
+        fetch('https://data.education.gouv.fr/api/records/1.0/search/?dataset=fr-en-annuaire-education&lang=fr&rows=10&start=0&facet[]=nom_etablissement&facet[]=type_etablissement&q=type_etablissement%3AColl%C3%A8ge&format=json&timezone=UTC')
+          .then(response => response.json())
+          .then(data => {
+            const colleges = data.records;
+            const matchingColleges = colleges.filter(college => college.fields.nom_etablissement.toLowerCase().includes(searchTerm.toLowerCase()));
+
+            // Afficher les résultats correspondants
+            matchingColleges.forEach(college => {
+              const collegeName = college.fields.nom_etablissement;
+              const collegeElement = document.createElement('p');
+              collegeElement.classList.add('suggestion');
+              collegeElement.textContent = collegeName;
+              resultsContainer.appendChild(collegeElement);
+
+              // Gestionnaire d'événements de clic pour sélectionner une proposition
+              collegeElement.addEventListener('click', function() {
+                searchInput.value = collegeName;
+                resultsContainer.innerHTML = '';
+              });
+            });
+          })
+          .catch(error => console.log(error));
+      }
+    });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     </body>
